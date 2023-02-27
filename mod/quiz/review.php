@@ -118,7 +118,8 @@ $quiz = $attemptobj->get_quiz();
 $overtime = 0;
 
 if ($attempt->state == quiz_attempt::FINISHED) {
-    if ($timetaken = ($attempt->timefinish - $attempt->timestart)) {
+    $timetaken = ($attempt->timefinish - $attempt->timestart);
+    if ($timetaken) {
         if ($quiz->timelimit && $timetaken > ($quiz->timelimit + 60)) {
             $overtime = $timetaken - $quiz->timelimit;
             $overtime = format_time($overtime);
