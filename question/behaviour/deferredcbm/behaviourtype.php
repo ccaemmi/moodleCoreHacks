@@ -119,7 +119,7 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
         // Add a note to explain the max mark.
         $summarydata['qbehaviour_cbm_grade_explanation'] = array(
             'title' => '',
-            'content' => html_writer::tag('i', get_string('cbmgradewithbonus', 'qbehaviour_deferredcbm')) .
+            'content' => html_writer::tag('i', get_string('cbmgradeexplanation', 'qbehaviour_deferredcbm')) .
                     $OUTPUT->help_icon('cbmgrades', 'qbehaviour_deferredcbm'),
         );
 
@@ -144,17 +144,17 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
         );
         $summarydata['qbehaviour_cbm_entire_quiz_cbm_bonus'] = array(
             'title' => get_string('cbmbonus', 'qbehaviour_deferredcbm'),
-            'content' => $this->format_probability($cbmbonus, 1),
-        );
+            'content' => get_string('cbmbonusexpl', 'qbehaviour_deferredcbm',$this->format_probability($cbmbonus, 1)),
+        ); // Explan added.
         $summarydata['qbehaviour_cbm_entire_quiz_accuracy_and_bonus'] = array(
             'title' => get_string('accuracyandbonus', 'qbehaviour_deferredcbm'),
             'content' => get_string('accyincludingbonus', 'qbehaviour_deferredcbm',$this->format_probability($accuracyandbonus, 1)),
         );
-        $summarydata['qbehaviour_cbm_entire_quiz_cb_grade'] = array(
-            'title' => get_string('cbmgrade', 'qbehaviour_deferredcbm'),
-            'content' => $accuracyandbonus,
-        );
-
+/**        $summarydata['qbehaviour_cbm_entire_quiz_cb_grade'] = array(
+ *           'title' => get_string('cbmgrade', 'qbehaviour_deferredcbm'),
+ *            'content' => $accuracyandbonus,
+ *        );
+ */
         if ($notansweredcount && array_sum($attemptcount) > 0) {
             $totalquestions   = array_sum($attemptcount);
             $grandtotalweight = array_sum($totalweight);
@@ -183,8 +183,8 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
             );
             $summarydata['qbehaviour_cbm_answered_quiz_cbm_bonus'] = array(
                 'title' => get_string('cbmbonus', 'qbehaviour_deferredcbm'),
-                'content' => $this->format_probability($cbmbonus, 1),
-            );
+                'content' => get_string('cbmbonusexpl', 'qbehaviour_deferredcbm',$this->format_probability($cbmbonus, 1)),
+            ); // Explan added.
             $summarydata['qbehaviour_cbm_answered_quiz_accuracy_and_bonus'] = array(
                 'title' => get_string('accuracyandbonus', 'qbehaviour_deferredcbm'),
                 'content' => get_string('accyincludingbonus', 'qbehaviour_deferredcbm',$this->format_probability($accuracyandbonus, 1)),

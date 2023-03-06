@@ -198,7 +198,7 @@ if($cbmattempt) {
     $a->grade = html_writer::tag('b', quiz_format_grade($quiz, $cbmdata['cbgradefraction'] * $quiz->grade));
     $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
     $formattedgrade = get_string('cbgradeoutof', 'qbehaviour_deferredcbm', $a);
-    $additional_summary_data['qbehaviour_cbm_entire_quiz_cb_grade']['content'] = $formattedgrade;
+//    $additional_summary_data['qbehaviour_cbm_entire_quiz_cb_grade']['content'] = $formattedgrade; //REM 5/3/23 cos displayed at end
 }
 if ($options->marks >= question_display_options::MARK_AND_MAX && quiz_has_grades($quiz)) {
 

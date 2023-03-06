@@ -25,18 +25,19 @@
 
 $string['accuracy'] = 'Accuracy';
 $string['accuracyandbonus'] = 'CB Accuracy';
-$string['accyincludingbonus'] = '{$a} (including bonus)';
-$string['accyignoringcertainty'] = '{$a} (ignoring certainty)';
+$string['accyincludingbonus'] = '{$a} (= Accuracy + CB Bonus)';
+$string['accyignoringcertainty'] = '{$a} (= % correct, ignoring certainty)';
 $string['answers'] = 'Answers';
 $string['assumingcertainty'] = 'You did not select a certainty. Assuming: {$a}.';
 $string['attemptwithcbm'] = 'This quiz currently doesn\'t use CBM, but the atttempt was made with CBM';
 $string['attemptwithoutcbm'] = 'This quiz currently uses CBM, but this atttempt was made without CBM';
-$string['averagecbmmark'] = 'Average CBM mark';
+$string['averagecbmmark'] = 'CB Average mark';
 $string['basemark'] = 'Base mark {$a}';
 $string['breakdownbycertainty'] = 'CBM Break-down by certainty';
+$string['cbmbonusexpl'] = '{$a} (for good identification of reliable and unreliable answers)';
 $string['cbmbonus'] = 'CB bonus';
 $string['cbmmark'] = 'CBM mark {$a}';
-$string['cbmgradeexplanation'] = 'With CBM, the Moodle grade (above) can be up to 300%, based directly on your CB marks.';
+$string['cbmgradeexplanation'] = 'With CBM, the Moodle grade (above) can be up to 300% [NB 100% = all correct at C=1].';
 $string['cbmgradewithbonus'] = 'For CBM, the grade corresponds to the CB Accuracy for the whole quiz (below).';
 $string['cbmgrade'] = 'CB Grade';
 $string['cbgradeoutof'] = '{$a->grade} out of {$a->maxgrade} (based on CB accuracy: maximum 100%)';
@@ -58,21 +59,22 @@ Note that misconceptions (confident errors) can give a negative bonus (or even a
         to think more carefully about which things you know or can do reliably, and how to check and justify your answers.';
 $string['cbmgrades_link'] = 'qbehaviour/deferredcbm/certaintygrade';
 $string['certainty'] = 'Certainty';
-$string['certainty_help'] = 'Certainty-based marking requires you to indicate how reliable you think your answer is. The available levels are:
+$string['certainty_help'] = 'Certainty-Based Marking (CBM) asks how reliable you think your answer is. Choose -
 
-Certainty level     | C=1 (Unsure) | C=2 (Mid) | C=3 (Quite sure)
-------------------- | ------------ | --------- | ----------------
-Mark if correct     |   1          |    2      |      3
-Mark if wrong       |   0          |   -2      |     -6
-Probability correct |  <67%        | 67-80%    |    >80%
+Certainty             | C=1  | C=2  | C=3 
+--------------------- | -------- | --------- | ---
+Confidence            | **Weak** &nbsp;| &nbsp;**Mid** | **High**
+**Mark (if correct)**     | &nbsp;  **1**  | &nbsp; **2**   | &nbsp; **3**
+**Mark (if wrong)**       | &nbsp;  **0**  | &nbsp;**-2**   | &nbsp;**-6**
+Best if P(correct) is &nbsp; &nbsp;  | **<67%** | **67-80%** &nbsp;|  **>80%**
 
-Best marks are gained by acknowledging uncertainty. For example, if you think there is more than a 1 in 3 chance of being wrong, you should enter C=1 and avoid the risk of a negative mark.
+<br/>To get good marks you must think carefully and acknowledge uncertainty. If there seems more than a 1-in-3 chance of being wrong, enter C=1 to avoid the risk of a negative mark. Don&apos;t risk -6 unless at least 80% sure. 
 ';
 $string['certainty_link'] = 'qbehaviour/deferredcbm/certainty';
-$string['certainty-1'] = 'No Idea';
-$string['certainty1'] = 'C=1 (Unsure: <67%)';
-$string['certainty2'] = 'C=2 (Mid: >67%)';
-$string['certainty3'] = 'C=3 (Quite sure: >80%)';
+$string['certainty-1'] = 'No Idea &nbsp; ';
+$string['certainty1'] = 'C=1 &nbsp; ';
+$string['certainty2'] = 'C=2 &nbsp; ';
+$string['certainty3'] = 'C=3  ';
 $string['certaintyshort-1'] = 'No Idea';
 $string['certaintyshort1'] = 'C=1';
 $string['certaintyshort2'] = 'C=2';
@@ -90,6 +92,6 @@ $string['pluginname'] = 'Deferred feedback with CBM';
 $string['privacy:metadata'] = 'The Deferred feedback with CBM question behaviour plugin does not store any personal data.';
 $string['slightlyoverconfident'] = 'a bit over-confident';
 $string['slightlyunderconfident'] = 'a bit under-confident';
-$string['totalmarks'] = 'CBM Total';
+$string['totalmarks'] = 'CB total marks';
 $string['underconfident'] = 'under-confident';
 $string['weightx'] = 'Weight {$a}';
