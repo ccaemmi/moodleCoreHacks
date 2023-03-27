@@ -31,11 +31,11 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
 
 $attemptid = required_param('attempt', PARAM_INT);
-$page      = optional_param('page', 0, PARAM_INT);
-$showall   = optional_param('showall', null, PARAM_BOOL);
-$cmid      = optional_param('cmid', null, PARAM_INT);
+$page = optional_param('page', 0, PARAM_INT);
+$showall = optional_param('showall', null, PARAM_BOOL);
+$cmid = optional_param('cmid', null, PARAM_INT);
 
-$url = new moodle_url('/mod/quiz/review.php', array('attempt'=>$attemptid));
+$url = new moodle_url('/mod/quiz/review.php', array('attempt' => $attemptid));
 if ($page !== 0) {
     $url->param('page', $page);
 } else if ($showall) {
@@ -110,7 +110,7 @@ $PAGE->set_title($attemptobj->review_page_title($page, $showall));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
 $PAGE->activityheader->disable();
 
-// Summary table start. ============================================================================
+// Summary table start. ============================================================================.
 
 // Work out some time-related things.
 $attempt = $attemptobj->get_attempt();
@@ -140,7 +140,7 @@ if (!$attemptobj->get_quiz()->showuserpicture && $attemptobj->get_userid() != $U
     $userpicture = new user_picture($student);
     $userpicture->courseid = $attemptobj->get_courseid();
     $summarydata['user'] = array(
-        'title'   => $userpicture,
+        'title' => $userpicture,
         'content' => new action_link(new moodle_url('/user/view.php', array(
                                 'id' => $student->id, 'course' => $attemptobj->get_courseid())),
                           fullname($student, true)),
@@ -152,7 +152,7 @@ if ($attemptobj->has_capability('mod/quiz:viewreports')) {
             $showall));
     if ($attemptlist) {
         $summarydata['attemptlist'] = array(
-            'title'   => get_string('attempts', 'quiz'),
+            'title' => get_string('attempts', 'quiz'),
             'content' => $attemptlist,
         );
     }
@@ -160,85 +160,81 @@ if ($attemptobj->has_capability('mod/quiz:viewreports')) {
 
 // Timing information.
 $summarydata['startedon'] = array(
-    'title'   => get_string('startedon', 'quiz'),
+    'title' => get_string('startedon', 'quiz'),
     'content' => userdate($attempt->timestart),
 );
 
 $summarydata['state'] = array(
-    'title'   => get_string('attemptstate', 'quiz'),
+    'title' => get_string('attemptstate', 'quiz'),
     'content' => quiz_attempt::state_name($attempt->state),
 );
 
 if ($attempt->state == quiz_attempt::FINISHED) {
     $summarydata['completedon'] = array(
-        'title'   => get_string('completedon', 'quiz'),
+        'title' => get_string('completedon', 'quiz'),
         'content' => userdate($attempt->timefinish),
     );
     $summarydata['timetaken'] = array(
-        'title'   => get_string('timetaken', 'quiz'),
+        'title' => get_string('timetaken', 'quiz'),
         'content' => $timetaken,
     );
 }
 
 if (!empty($overtime)) {
     $summarydata['overdue'] = array(
-        'title'   => get_string('overdue', 'quiz'),
+        'title' => get_string('overdue', 'quiz'),
         'content' => $overtime,
     );
 }
 
 // Show marks (if the user is allowed to see marks at the moment).
 $grade = quiz_rescale_grade($attempt->sumgrades, $quiz, false);
-$additional_summary_data = $attemptobj->get_additional_summary_data($options);
-$cbmattempt = array_key_exists('cbmdata',$additional_summary_data);
-if($cbmattempt) {
-    $cbmdata = $additional_summary_data['cbmdata'];
-    //Scale CB grade to $quiz->grade
+$additionalsummarydata = $attemptobj->get_additional_summary_data($options);
+$cbmattempt = array_key_exists('cbmdata', $additionalsummarydata);
+if ($cbmattempt) {
+    $cbmdata = $additionalsummarydata['cbmdata'];
+    // Scale CB grade to $quiz->grade .
     $a = new stdClass();
     $a->grade = html_writer::tag('b', quiz_format_grade($quiz, $cbmdata['cbgradefraction'] * $quiz->grade));
     $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
     $formattedgrade = get_string('cbgradeoutof', 'qbehaviour_deferredcbm', $a);
-//    $additional_summary_data['qbehaviour_cbm_entire_quiz_cb_grade']['content'] = $formattedgrade; //REM 5/3/23 cos displayed at end
+    // ...$additionalsummarydata['qbehaviour_cbm_entire_quiz_cb_grade']['content'] = $formattedgrade; // Don't show this
 }
 if ($options->marks >= question_display_options::MARK_AND_MAX && quiz_has_grades($quiz)) {
-
+    // Can only display grade if attempt finished.
     if ($attempt->state != quiz_attempt::FINISHED) {
-        // Cannot display grade.
-
+        usleep(1); // Dummy action.
     } else if (is_null($grade)) {
         $summarydata['grade'] = array(
-            'title'   => get_string('grade', 'quiz'),
+            'title' => get_string('grade', 'quiz'),
             'content' => quiz_format_grade($quiz, $grade),
         );
-
     } else {
-        // Default values without CBM
+        // Default values without CBM.
         $marks = $attempt->sumgrades;
         $showgrade = $grade;
         $percent = $marks * 100 / $quiz->sumgrades;
-        // Handle if quiz and/or attempt use CBM
+        // Handle if quiz and/or attempt use CBM.
         $cbmquiz = ($quiz->preferredbehaviour === 'immediatecbm') || ($quiz->preferredbehaviour === 'deferredcbm');
         if ($cbmattempt) {
-            // Attempt was done with CBM
+            // Attempt was done with CBM.
             if ($cbmquiz) {
                 $marks = $cbmdata['averagecbm'] * $quiz->sumgrades;
                 $showgrade = $cbmdata['gradefraction'] * $quiz->grade;
                 $percent = $cbmdata['gradefraction'] * 100;
-            }
-            else {
+            } else {
                 $marks = $cbmdata['accuracy'] * $quiz->sumgrades;
                 $showgrade = $cbmdata['accuracy'] * $quiz->grade;
                 $percent = $cbmdata['accuracy'] * 100;
-                $additional_summary_data['qbehaviour_cbm_grade_explanation'] = array(
-                        'title'   => '',
+                $additionalsummarydata['qbehaviour_cbm_grade_explanation'] = array(
+                        'title' => '',
                         'content' => get_string('attemptwithcbm', 'qbehaviour_deferredcbm'),
                 );
             }
-        }
-        else {
+        } else {
             if ($cbmquiz) {
-                $additional_summary_data['qbehaviour_cbm_grade_explanation'] = array(
-                        'title'   => '',
+                $additionalsummarydata['qbehaviour_cbm_grade_explanation'] = array(
+                        'title' => '',
                         'content' => get_string('attemptwithoutcbm', 'qbehaviour_deferredcbm'),
                 );
             }
@@ -250,7 +246,7 @@ if ($options->marks >= question_display_options::MARK_AND_MAX && quiz_has_grades
             $a->grade = quiz_format_grade($quiz, $marks);
             $a->maxgrade = quiz_format_grade($quiz, $quiz->sumgrades);
             $summarydata['marks'] = array(
-                'title'   => get_string('marks', 'quiz'),
+                'title' => get_string('marks', 'quiz'),
                 'content' => get_string('outofshort', 'quiz', $a),
             );
         }
@@ -270,25 +266,25 @@ if ($options->marks >= question_display_options::MARK_AND_MAX && quiz_has_grades
             $formattedgrade = get_string('outof', 'quiz', $a);
         }
         $summarydata['grade'] = array(
-            'title'   => get_string('grade', 'quiz'),
+            'title' => get_string('grade', 'quiz'),
             'content' => $formattedgrade,
         );
     }
 }
 
 // Any additional summary data from the behaviour.
-$summarydata = array_merge($summarydata, $additional_summary_data);
+$summarydata = array_merge($summarydata, $additionalsummarydata);
 
 // Feedback if there is any, and the user is allowed to see it now.
 $feedback = $attemptobj->get_overall_feedback($grade);
 if ($options->overallfeedback && $feedback) {
     $summarydata['feedback'] = array(
-        'title'   => get_string('feedback', 'quiz'),
+        'title' => get_string('feedback', 'quiz'),
         'content' => $feedback,
     );
 }
 
-// Summary table end. ==============================================================================
+// Summary table end. ==============================================================================.
 
 if ($showall) {
     $slots = $attemptobj->get_slots();
