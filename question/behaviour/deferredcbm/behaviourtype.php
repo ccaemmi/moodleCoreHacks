@@ -48,27 +48,27 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
         }
 
         // Prepare accumulators to hold the data we are about to collect.
-        $notansweredcount  = 0;
+        $notansweredcount = 0;
         $notansweredweight = 0;
         $attemptcount = array(
             question_cbm::HIGH => 0,
-            question_cbm::MED  => 0,
-            question_cbm::LOW  => 0,
+            question_cbm::MED => 0,
+            question_cbm::LOW => 0,
         );
         $totalweight = array(
             question_cbm::HIGH => 0,
-            question_cbm::MED  => 0,
-            question_cbm::LOW  => 0,
+            question_cbm::MED => 0,
+            question_cbm::LOW => 0,
         );
         $totalrawscore = array(
             question_cbm::HIGH => 0,
-            question_cbm::MED  => 0,
-            question_cbm::LOW  => 0,
+            question_cbm::MED => 0,
+            question_cbm::LOW => 0,
         );
         $totalcbmscore = array(
             question_cbm::HIGH => 0,
-            question_cbm::MED  => 0,
-            question_cbm::LOW  => 0,
+            question_cbm::MED => 0,
+            question_cbm::LOW => 0,
         );
 
         // Loop through the data, and add it to the accumulators.
@@ -80,7 +80,7 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
             $gradedstep = $qa->get_last_step_with_behaviour_var('_rawfraction');
 
             if (!$gradedstep->has_behaviour_var('_rawfraction')) {
-                $notansweredcount  += 1;
+                $notansweredcount += 1;
                 $notansweredweight += $qa->get_max_mark();
                 continue;
             }
@@ -94,80 +94,103 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
                 $certainty = question_cbm::default_certainty();
             }
 
-            $attemptcount[$certainty]  += 1;
-            $totalweight[$certainty]   += $qa->get_max_mark();
+            $attemptcount[$certainty] += 1;
+            $totalweight[$certainty] += $qa->get_max_mark();
             $totalrawscore[$certainty] += $qa->get_max_mark() * $gradedstep->get_behaviour_var('_rawfraction');
             $totalcbmscore[$certainty] += $qa->get_mark();
         }
 
         // Hence compute some statistics.
-        $totalquestions   = $notansweredcount + array_sum($attemptcount);
+        $totalquestions = $notansweredcount + array_sum($attemptcount);
         $grandtotalweight = $notansweredweight + array_sum($totalweight);
-        $accuracy         = array_sum($totalrawscore) / $grandtotalweight;
-        $averagecbm       = array_sum($totalcbmscore) / $grandtotalweight;
-        $cbmbonus         = $this->calculate_bonus($averagecbm, $accuracy);
+        $accuracy = array_sum($totalrawscore) / $grandtotalweight;
+        $averagecbm = array_sum($totalcbmscore) / $grandtotalweight;
+        $cbmbonus = $this->calculate_bonus($averagecbm, $accuracy);
         $accuracyandbonus = $accuracy + $cbmbonus;
+
+        $summarydata['cbmdata'] = array( 'title' => '', 'content' => '',
+            'accuracy' => $accuracy,
+            'gradefraction' => $accuracyandbonus,
+            'cbgradefraction' => $accuracyandbonus,
+            'averagecbm' => $averagecbm,
+            'grandtotalweight' => $grandtotalweight,
+        );
 
         // Add a note to explain the max mark.
         $summarydata['qbehaviour_cbm_grade_explanation'] = array(
             'title' => '',
-            'content' => html_writer::tag('i', get_string('cbmgradeexplanation', 'qbehaviour_deferredcbm')) .
-                    $OUTPUT->help_icon('cbmgrades', 'qbehaviour_deferredcbm'),
+            'content' => html_writer::tag('i', get_string('cbmgradewithbonus', 'qbehaviour_deferredcbm')) .
+                $OUTPUT->help_icon('cbmgrades', 'qbehaviour_deferredcbm'),
         );
 
         // Now we can start generating some of the summary: overall values.
         $summarydata['qbehaviour_cbm_entire_quiz_heading'] = array(
             'title' => '',
             'content' => html_writer::tag('h3',
-                    get_string('forentirequiz', 'qbehaviour_deferredcbm', $totalquestions),
-                    array('class' => 'qbehaviour_deferredcbm_summary_heading')),
+                get_string('forentirequiz', 'qbehaviour_deferredcbm', $totalquestions),
+                array('class' => 'qbehaviour_deferredcbm_summary_heading')),
+        );
+        $summarydata['qbehaviour_cbm_entire_quiz_cbm_total'] = array(
+            'title' => get_string('totalmarks', 'qbehaviour_deferredcbm'),
+            'content' => $averagecbm * $grandtotalweight,
         );
         $summarydata['qbehaviour_cbm_entire_quiz_cbm_average'] = array(
             'title' => get_string('averagecbmmark', 'qbehaviour_deferredcbm'),
-            'content' => format_float($averagecbm, $options->markdp),
+            'content' => get_string('maxrange', 'qbehaviour_deferredcbm', format_float($averagecbm, $options->markdp)) ,
         );
         $summarydata['qbehaviour_cbm_entire_quiz_accuracy'] = array(
             'title' => get_string('accuracy', 'qbehaviour_deferredcbm'),
-            'content' => $this->format_probability($accuracy, 1),
+            'content' => get_string('accyignoringcertainty', 'qbehaviour_deferredcbm', $this->format_probability($accuracy, 1)),
         );
         $summarydata['qbehaviour_cbm_entire_quiz_cbm_bonus'] = array(
             'title' => get_string('cbmbonus', 'qbehaviour_deferredcbm'),
-            'content' => $this->format_probability($cbmbonus, 1),
-        );
+            'content' => get_string('cbmbonusexpl', 'qbehaviour_deferredcbm', $this->format_probability($cbmbonus, 1)),
+        ); // Explan added.
         $summarydata['qbehaviour_cbm_entire_quiz_accuracy_and_bonus'] = array(
             'title' => get_string('accuracyandbonus', 'qbehaviour_deferredcbm'),
-            'content' => $this->format_probability($accuracyandbonus, 1),
+            'content' => get_string('accyincludingbonus', 'qbehaviour_deferredcbm',
+                $this->format_probability($accuracyandbonus, 1)),
         );
-
+        /*
+        $summarydata['qbehaviour_cbm_entire_quiz_cb_grade'] = array(
+            'title' => get_string('cbmgrade', 'qbehaviour_deferredcbm'),
+            'content' => $accuracyandbonus,
+        );
+        */
         if ($notansweredcount && array_sum($attemptcount) > 0) {
-            $totalquestions   = array_sum($attemptcount);
+            $totalquestions = array_sum($attemptcount);
             $grandtotalweight = array_sum($totalweight);
-            $accuracy         = array_sum($totalrawscore) / $grandtotalweight;
-            $averagecbm       = array_sum($totalcbmscore) / $grandtotalweight;
-            $cbmbonus         = $this->calculate_bonus($averagecbm, $accuracy);
+            $accuracy = array_sum($totalrawscore) / $grandtotalweight;
+            $averagecbm = array_sum($totalcbmscore) / $grandtotalweight;
+            $cbmbonus = $this->calculate_bonus($averagecbm, $accuracy);
             $accuracyandbonus = $accuracy + $cbmbonus;
 
             $summarydata['qbehaviour_cbm_answered_quiz_heading'] = array(
                 'title' => '',
                 'content' => html_writer::tag('h3',
-                        get_string('foransweredquestions', 'qbehaviour_deferredcbm', $totalquestions),
-                        array('class' => 'qbehaviour_deferredcbm_summary_heading')),
+                    get_string('foransweredquestions', 'qbehaviour_deferredcbm', $totalquestions),
+                    array('class' => 'qbehaviour_deferredcbm_summary_heading')),
+            );
+            $summarydata['qbehaviour_cbm_answered_quiz_answers'] = array(
+                'title' => get_string('answers', 'qbehaviour_deferredcbm'),
+                'content' => ($totalquestions)
             );
             $summarydata['qbehaviour_cbm_answered_quiz_cbm_average'] = array(
                 'title' => get_string('averagecbmmark', 'qbehaviour_deferredcbm'),
-                'content' => format_float($averagecbm, $options->markdp),
+                'content' => get_string('maxrange', 'qbehaviour_deferredcbm', format_float($averagecbm, $options->markdp)) ,
             );
             $summarydata['qbehaviour_cbm_answered_quiz_accuracy'] = array(
                 'title' => get_string('accuracy', 'qbehaviour_deferredcbm'),
-                'content' => $this->format_probability($accuracy, 1),
+                'content' => get_string('accyignoringcertainty', 'qbehaviour_deferredcbm', $this->format_probability($accuracy, 1)),
             );
             $summarydata['qbehaviour_cbm_answered_quiz_cbm_bonus'] = array(
                 'title' => get_string('cbmbonus', 'qbehaviour_deferredcbm'),
-                'content' => $this->format_probability($cbmbonus, 1),
-            );
+                'content' => get_string('cbmbonusexpl', 'qbehaviour_deferredcbm', $this->format_probability($cbmbonus, 1)),
+            ); // Explan added.
             $summarydata['qbehaviour_cbm_answered_quiz_accuracy_and_bonus'] = array(
                 'title' => get_string('accuracyandbonus', 'qbehaviour_deferredcbm'),
-                'content' => $this->format_probability($accuracyandbonus, 1),
+                'content' => get_string('accyincludingbonus', 'qbehaviour_deferredcbm',
+                    $this->format_probability($accuracyandbonus, 1)),
             );
         }
 
@@ -175,11 +198,11 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
         $summarydata['qbehaviour_cbm_judgement_heading'] = array(
             'title' => '',
             'content' => html_writer::tag('h3', get_string('breakdownbycertainty', 'qbehaviour_deferredcbm'),
-                    array('class' => 'qbehaviour_deferredcbm_summary_heading')),
+                array('class' => 'qbehaviour_deferredcbm_summary_heading')),
         );
 
         foreach ($attemptcount as $certainty => $count) {
-            $key   = 'qbehaviour_cbm_judgement' . $certainty;
+            $key = 'qbehaviour_cbm_judgement' . $certainty;
             $title = question_cbm::get_short_string($certainty);
 
             if ($count == 0) {
@@ -196,10 +219,10 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
 
             $a = new stdClass();
             $a->responses = $count;
-            $a->idealrangelow  = $this->format_probability($lowerlimit);
+            $a->idealrangelow = $this->format_probability($lowerlimit);
             $a->idealrangehigh = $this->format_probability($upperlimit);
-            $a->fraction       = html_writer::tag('span', $this->format_probability($fraction),
-                    array('class' => 'qbehaviour_deferredcbm_actual_percentage'));
+            $a->fraction = html_writer::tag('span', $this->format_probability($fraction),
+                array('class' => 'qbehaviour_deferredcbm_actual_percentage'));
 
             if ($fraction < $lowerlimit - 0.0000005) {
                 if ((pow($fraction - $lowerlimit, 2) * $count) > 0.5) { // Rough indicator of significance: t > 1.5 or 1.8.
@@ -217,7 +240,7 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
                 $judgement = 'judgementok';
             }
             $a->judgement = html_writer::tag('span', get_string($judgement, 'qbehaviour_deferredcbm'),
-                    array('class' => 'qbehaviour_deferredcbm_' . $judgement));
+                array('class' => 'qbehaviour_deferredcbm_' . $judgement));
 
             $summarydata[$key] = array(
                 'title' => $title,
@@ -235,11 +258,11 @@ class qbehaviour_deferredcbm_type extends qbehaviour_deferredfeedback_type {
     public function calculate_bonus($total, $accuracy) {
         $expectedforaccuracy = max(
             $accuracy * question_cbm::adjust_fraction(1, question_cbm::LOW) +
-                (1 - $accuracy) * question_cbm::adjust_fraction(0, question_cbm::LOW),
+            (1 - $accuracy) * question_cbm::adjust_fraction(0, question_cbm::LOW),
             $accuracy * question_cbm::adjust_fraction(1, question_cbm::MED) +
-                (1 - $accuracy) * question_cbm::adjust_fraction(0, question_cbm::MED),
+            (1 - $accuracy) * question_cbm::adjust_fraction(0, question_cbm::MED),
             $accuracy * question_cbm::adjust_fraction(1, question_cbm::HIGH) +
-                (1 - $accuracy) * question_cbm::adjust_fraction(0, question_cbm::HIGH)
+            (1 - $accuracy) * question_cbm::adjust_fraction(0, question_cbm::HIGH)
         );
         // The constant 0.1 here is determinted empirically from looking at lots
         // for CBM quiz results. See www.ucl.ac.uk/~ucgbarg/tea/IUPS_2013a.pdf.
