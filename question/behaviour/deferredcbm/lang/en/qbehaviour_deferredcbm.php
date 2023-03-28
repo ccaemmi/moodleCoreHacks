@@ -45,7 +45,7 @@ $string['cbmgrades'] = 'CBM grades';
 $string['cbmgrades_help'] = 'With Certainty Based Marking (CBM), all correct with C=1 (low certainty)
         will give a Moodle Grade of 100%. Grades may be up to 300% if every question is correct with C=3 (high certainty).
         Simple Moodle Grades with CBM are not easily compared with Grades not using CBM, unless converted
-        to CB Grades (below).  
+        to CB Grades (below).
 
 **Accuracy** is the percentage correct, ignoring certainty but weighted with the values assigned to each question.
         If you successfully distinguish more and less reliable answers, this is reflected in a **CB Bonus**. The **CB Accuracy**
@@ -55,20 +55,20 @@ $string['cbmgrades_help'] = 'With Certainty Based Marking (CBM), all correct wit
 Note that misconceptions (confident errors) can give a negative bonus (or even a negative grade). You can never expect to gain by
         hiding genuine uncertainty. As a fraction of maximum (300%), Moodle Grades with CBM are nearly always much less than
         simple grades or accuracy, so don\'t be misled into thinking you are doing badly! Think about your **Accuracy** and your
-        **CB Bonus**. Practice and good judgement should yield a positive bonus, but if it is negative this signals that you need 
+        **CB Bonus**. Practice and good judgement should yield a positive bonus, but if it is negative this signals that you need
         to think more carefully about which things you know or can do reliably, and how to check and justify your answers.';
 $string['cbmgrades_link'] = 'qbehaviour/deferredcbm/certaintygrade';
 $string['certainty'] = 'Certainty';
 $string['certainty_help'] = 'Certainty-Based Marking (CBM) asks how reliable you think your answer is. Choose -
 
-Certainty             | C=1  | C=2  | C=3 
+Certainty             | C=1  | C=2  | C=3
 --------------------- | -------- | --------- | ---
 Confidence            | **Weak** &nbsp;| &nbsp;**Mid** | **High**
 **Mark (if correct)**     | &nbsp;  **1**  | &nbsp; **2**   | &nbsp; **3**
 **Mark (if wrong)**       | &nbsp;  **0**  | &nbsp;**-2**   | &nbsp;**-6**
 Best if P(correct) is &nbsp; &nbsp;  | **<67%** | **67-80%** &nbsp;|  **>80%**
 
-<br/>To get good marks you must think carefully and acknowledge uncertainty. If there seems more than a 1-in-3 chance of being wrong, enter C=1 to avoid the risk of a negative mark. Don&apos;t risk -6 unless at least 80% sure. 
+<br/>To get good marks you must think carefully and acknowledge uncertainty. If there seems more than a 1-in-3 chance of being wrong, enter C=1 to avoid the risk of a negative mark. Don&apos;t risk -6 unless at least 80% sure.
 ';
 $string['certainty_link'] = 'qbehaviour/deferredcbm/certainty';
 $string['certainty-1'] = 'No Idea &nbsp; ';
@@ -90,8 +90,8 @@ $string['noquestions'] = 'No responses';
 $string['overconfident'] = 'over-confident';
 $string['pluginname'] = 'Deferred feedback with CBM';
 $string['privacy:metadata'] = 'The Deferred feedback with CBM question behaviour plugin does not store any personal data.';
-$string['slightlyoverconfident'] = 'a bit over-confident';
-$string['slightlyunderconfident'] = 'a bit under-confident';
+$string['slightlyoverconfident'] = 'possibly over-confident';
+$string['slightlyunderconfident'] = 'under-confident, or perhaps just lucky';
 $string['totalmarks'] = 'CB total marks';
 $string['underconfident'] = 'under-confident';
 $string['weightx'] = 'Weight {$a}';
