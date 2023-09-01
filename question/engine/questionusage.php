@@ -366,8 +366,11 @@ class question_usage_by_activity {
      */
     public function get_total_mark() {
         $mark = 0;
-        if ( ($this->preferredbehaviour === 'immediatecbm') || ($this->preferredbehaviour === 'deferredcbm') ) {
-            return $this->cbm_total($this->questionattempts);
+        $accuracyenabled = get_config('qbehaviour_deferredcbm', 'checkaccuracyandbonus_visiblename');
+        if ($accuracyenabled) {
+            if ( ($this->preferredbehaviour === 'immediatecbm') || ($this->preferredbehaviour === 'deferredcbm') ) {
+                return $this->cbm_total($this->questionattempts);
+            }
         }
         foreach ($this->questionattempts as $qa) {
             if ($qa->get_max_mark() > 0 && $qa->get_state() == question_state::$needsgrading) {
